@@ -1,0 +1,115 @@
+edistance <- function(s,c,n)
+{
+dist <- numeric()
+for(i in 1:n){
+d <- (s[i,] - c)^2
+dist <- append(dist,sqrt(sum(d)))}
+return(dist)}
+
+disc <- function(distances)
+{ 
+  m <- numeric()
+  m <- append(m, mean(distances))
+  m <- append(m, var(distances))
+  m <- append(m, myskew(distances))
+  return(m)
+}
+
+myskew <- function(x) {
+    n <- length(x)
+    v <- var(x)
+    m <- mean(x)
+    third.moment <- (1/(n - 2)) * sum((x - m)^3)
+    return(third.moment/(v^(3/2)))
+}
+
+Score <- function(Mq, M)
+{
+ Sqi <- 1/(1 + (1/12*(sum(abs(Mq - M)))))
+ return(Sqi)
+}
+momentscalc <- function(sample)
+{
+sctd <- colMeans(sample)
+N <- nrow(sample)
+dctd <- edistance(sample, sctd,N)
+close <- which.min(dctd)
+far <- which.max(dctd)
+cst <- sample[close,]
+fst <- sample[far,]
+edf <- edistance(sample, fst,N)
+far <- which.max(edf)
+ftf <- sample[far,]
+dcst <- edistance(sample, cst,N)
+dfst <- edistance(sample, fst,N)
+dftf <- edistance(sample, ftf,N)
+M <- numeric()
+Mctd <- disc(dctd)
+Mcst <- disc(dcst)
+Mfst <- disc(dfst)
+Mftf <- disc(dftf)
+M <- append(M,Mctd)
+M <- append(M,Mcst)
+M <- append(M,Mfst)
+M <- append(M,Mftf)
+return(M)
+}
+
+s1agl<- read.table("D:/CS612/rmsd/1agl.txt")
+M1 <- momentscalc(s1agl)
+s1c9z<- read.table("D:/CS612/rmsd/1c9z.txt")
+M2 <- momentscalc(s1c9z)
+s1cya<- read.table("D:/CS612/rmsd/1cya.txt")
+M3 <- momentscalc(s1cya)
+s1d14<- read.table("D:/CS612/rmsd/1d14.txt")
+M4 <- momentscalc(s1d14)
+s1d17<- read.table("D:/CS612/rmsd/1d17.txt")
+M5 <- momentscalc(s1d17)
+s1d35<- read.table("D:/CS612/rmsd/1d35.txt")
+M6 <- momentscalc(s1d35)
+s1d37<- read.table("D:/CS612/rmsd/1d37.txt")
+M7 <- momentscalc(s1d37)
+s1da0<- read.table("D:/CS612/rmsd/1da0.txt")
+M8 <- momentscalc(s1da0)
+s110d<- read.table("D:/CS612/rmsd/110d.txt")
+M9 <- momentscalc(s110d)
+s151d<- read.table("D:/CS612/rmsd/151d.txt")
+M10 <- momentscalc(s151d)
+query<- read.table("D:/CS612/rmsd/1d37.txt")
+Mq <- momentscalc(query)
+rank <- numeric()
+Sqi <- Score(Mq,M1)
+rank <- append(rank,Sqi)
+Sqi <- Score(Mq,M2)
+rank <- append(rank,Sqi)
+Sqi <- Score(Mq,M3)
+rank <- append(rank,Sqi)
+Sqi <- Score(Mq,M4)
+rank <- append(rank,Sqi)
+Sqi <- Score(Mq,M5)
+rank <- append(rank,Sqi)
+Sqi <- Score(Mq,M6)
+rank <- append(rank,Sqi)
+Sqi <- Score(Mq,M7)
+rank <- append(rank,Sqi)
+Sqi <- Score(Mq,M8)
+rank <- append(rank,Sqi)
+Sqi <- Score(Mq,M9)
+rank <- append(rank,Sqi)
+Sqi <- Score(Mq,M10)
+rank <- append(rank,Sqi)
+orderrank <- sort(rank,TRUE)
+for(i in 1:5){
+if(which(rank == orderrank[i]) == 1)
+{print("1agl"); print(orderrank[i])} else if(which(rank == orderrank[i]) == 2)
+{print("1c9z"); print(orderrank[i])} else if(which(rank == orderrank[i]) == 3)
+{print("1cya"); print(orderrank[i])} else if(which(rank == orderrank[i]) == 4)
+{print("1d14"); print(orderrank[i])} else if(which(rank == orderrank[i]) == 5)
+{print("1d17"); print(orderrank[i])} else if(which(rank == orderrank[i]) == 6)
+{print("1d35"); print(orderrank[i])} else if(which(rank == orderrank[i]) == 7)
+{print("1d37"); print(orderrank[i])} else if(which(rank == orderrank[i]) == 8)
+{print("1da0"); print(orderrank[i])} else if(which(rank == orderrank[i]) == 9)
+{print("110d"); print(orderrank[i])} else if(which(rank == orderrank[i]) == 10)
+{print("151d"); print(orderrank[i])} 
+}
+
